@@ -68,7 +68,7 @@ ListError ListPush (lst_t* list, list_elem value)
     {
         if (list->next[i] == -1)
         {
-            list->free = j;
+            list->free = i;
             break;
         }
     }
@@ -93,9 +93,101 @@ ListError ListDestor (lst_t* list)
     list->prev = nullptr;
     list->free = 0;
     list->capacity = 0;
-    list->first = 0;
-    list->last = 0;
+    list->head = 0;
+    list->tail = 0;
     list->size = 0;
 
     return IS_OK;
 }
+
+ListError ListPopHead (lst_t* list, list_elem* value)
+{
+    if (list == nullptr)
+        return NULL_PTR;
+
+    if (list->head < 0)
+        return OVERFLOW_ARRAY;
+    
+    if (value == nullptr)
+        return NULL_PTR;
+
+    if (list->next[list->head] == -1)
+        return NO_ELEMENT;
+
+    *value = list->data[list->head];
+
+    list->next[list->head] = -1;
+    list->prev[list->head] = -1;
+
+    return IS_OK;
+}
+
+ListError ListPop (lst_t* list, list_elem* value, int index)
+{
+    if (list == nullptr)
+        return NULL_PTR;
+    
+    if (value == nullptr)
+        return NULL_PTR;
+
+    if (list->next[index] == -1)
+        return NO_ELEMENT;  
+
+    int next_el = list->next[index];
+    int prev_el = list->prev[index];
+
+    if (next_el == 0)
+    {
+        ListPopHead(list, value);
+        return IS_OK;
+    }
+    
+    if (prev_el == 0)
+    {
+        //TODO ListPopTail(list, value);
+        return IS_OK;
+    }
+    
+    *value = list->data[index];
+
+    list->next[prev_el] = list->next[next_el];
+    list->prev[next_el] = list->prev[prev_el];
+
+    list->next[index] = -1;
+    list->prev[index] = -1;    
+
+    return IS_OK;
+}
+
+ListError ListDump (lst_t* list)
+{
+    assert(list);
+
+    for (int i = 0; i < list->head; i++)
+    {
+        printf("%-5.2lf", list->data[i]);
+    }
+
+    printf("\n");
+    for (int i = 0; i < list->head; i++)
+    {
+        printf("%-5d", list->next[i]);
+    }
+
+    printf("\n");
+    for (int i = 0; i < list->head; i++)
+    {
+        printf("%-5d", list->prev[i]);
+    }
+
+    printf("\n\nHead: %d", list->head);
+    printf("\nTail: %d", list->tail);
+    printf("\nCount of elemnts: %zu", list->size);
+    printf("\nFree element: %d", list->free);
+
+    printf("\n\nPtr data: [%p]", &list->data);
+    printf("\nPtr next: [%p]", &list->next);
+    printf("\nPtr prev: [%p]", &list->prev);
+
+    return IS_OK;
+} 
