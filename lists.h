@@ -5,11 +5,6 @@
 
 typedef double list_elem;
 
-struct lst_inf
-{
-    int head;
-    int tail;
-};
 
 struct lst_t
 {
@@ -19,7 +14,9 @@ struct lst_t
     int        free; 
     size_t     capacity;
 
-    lst_inf*   str_info;
+    int        tail;
+    int        head; // бывший последний (который последний сейчас)
+    size_t     size; 
 };
 
 enum ListError
@@ -32,4 +29,6 @@ enum ListError
 };
 
 ListError ListUnit (lst_t* list, ssize_t capacity);
+ListError ListDestor (lst_t* list);
+
 ListError ListPush (lst_t* list, list_elem value);
