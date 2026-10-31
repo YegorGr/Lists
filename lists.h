@@ -30,13 +30,13 @@ enum ListError
     NO_ELEMENT,
 };
 
-ListError ListUnit   (lst_t* list, ssize_t capacity);
-ListError ListDestor (lst_t* list);
-ListError ListDump   (lst_t* list);
+ListError ListUnit    (lst_t* list, ssize_t capacity);
+ListError ListDestroy (lst_t* list);
+ListError ListDump    (lst_t* list);
 
 
 ListError ListPop  (lst_t* list, list_elem* value, int index);
-ListError ListPush (lst_t* list, list_elem* value, int index);
+//TODO - ListPush (lst_t* list, list_elem* value, int index);
 
 ListError ListPushHead (lst_t* list, list_elem value);
 ListError ListPushTail (lst_t* list, list_elem value);

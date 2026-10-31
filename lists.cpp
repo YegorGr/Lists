@@ -41,12 +41,12 @@ ListError ListUnit (lst_t* list, ssize_t capacity)
     return IS_OK;
 }
 
-ListError ListPush (lst_t* list, list_elem value)
+ListError ListPushHead (lst_t* list, list_elem value)
 {
     if (list == nullptr)
         return NULL_PTR;
     
-    if (free <= 0)
+    if (list->free <= 0)
         return LIST_OUT;
 
     int elem_i = list->free;
@@ -79,7 +79,7 @@ ListError ListPush (lst_t* list, list_elem value)
     return IS_OK;
 }
 
-ListError ListDestor (lst_t* list)
+ListError ListDestroy (lst_t* list)
 {
     if (list == nullptr)
         return NULL_PTR;
@@ -136,6 +136,9 @@ ListError ListPop (lst_t* list, list_elem* value, int index)
     int next_el = list->next[index];
     int prev_el = list->prev[index];
 
+    list->size--;
+    list->free = index;
+
     if (next_el == 0)
     {
         ListPopHead(list, value);
@@ -150,12 +153,12 @@ ListError ListPop (lst_t* list, list_elem* value, int index)
     
     *value = list->data[index];
 
-    list->next[prev_el] = list->next[next_el];
-    list->prev[next_el] = list->prev[prev_el];
+    list->next[prev_el] = next_el;
+    list->prev[next_el] = prev_el;
 
     list->next[index] = -1;
-    list->prev[index] = -1;    
-
+    list->prev[index] = -1;  
+    
     return IS_OK;
 }
 
@@ -163,21 +166,28 @@ ListError ListDump (lst_t* list)
 {
     assert(list);
 
-    for (int i = 0; i < list->head; i++)
+    printf("index ");
+    for (int i = 0; i < list->head + 1; i++)
     {
-        printf("%-5.2lf", list->data[i]);
+        printf("  [%-d]", i);
+    }
+    printf("\ndata  ");
+
+    for (int i = 0; i < list->head + 1; i++)
+    {
+        printf("%5.0lf", list->data[i]);
     }
 
-    printf("\n");
-    for (int i = 0; i < list->head; i++)
+    printf("\nnext  ");
+    for (int i = 0; i < list->head + 1; i++)
     {
-        printf("%-5d", list->next[i]);
+        printf("%5d", list->next[i]);
     }
 
-    printf("\n");
-    for (int i = 0; i < list->head; i++)
+    printf("\nprev  ");
+    for (int i = 0; i < list->head + 1; i++)
     {
-        printf("%-5d", list->prev[i]);
+        printf("%5d", list->prev[i]);
     }
 
     printf("\n\nHead: %d", list->head);
@@ -185,9 +195,9 @@ ListError ListDump (lst_t* list)
     printf("\nCount of elemnts: %zu", list->size);
     printf("\nFree element: %d", list->free);
 
-    printf("\n\nPtr data: [%p]", &list->data);
-    printf("\nPtr next: [%p]", &list->next);
-    printf("\nPtr prev: [%p]", &list->prev);
+    printf("\n\nPtr data: [%p]", &list->data[0]);
+    printf("\nPtr next: [%p]", &list->next[0]);
+    printf("\nPtr prev: [%p]", &list->prev[0]);
 
     return IS_OK;
 } 
