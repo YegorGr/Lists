@@ -12,7 +12,7 @@ ListError ListUnit (lst_t* list, ssize_t capacity)
     if (capacity < 0)
         return NEGATIVE_CAPACITY;
 
-    list_elem* ptr_data = (list_elem*) calloc((size_t) capacity + 1, sizeof(list_elem)); // +1 for 0 in teh first
+    list_elem* ptr_data = (list_elem*) calloc((size_t) capacity + 1, sizeof(list_elem)); // +1 for 0 in the first
     int*       ptr_next = (int*)       calloc((size_t) capacity + 1, sizeof(int));
     int*       ptr_prev = (int*)       calloc((size_t) capacity + 1, sizeof(int));
 
@@ -25,8 +25,13 @@ ListError ListUnit (lst_t* list, ssize_t capacity)
     }
 
     ptr_next[0] = 0;
-    for (int i = 1; i < (int) (capacity + 1); i++)
-        ptr_next[i] = -1;
+    ptr_prev[0] = 0;
+
+    for (size_t i = 1; i <= capacity; i++)
+    {
+        ptr_next[i] = (i < capacity) ? i + 1 : 0; // when i == capacity next = 0 becouse end of array 
+        ptr_prev[i] = -1;                                
+    }
 
     list->data     = ptr_data;
     list->next     = ptr_next;
@@ -49,32 +54,20 @@ ListError ListPushHead (lst_t* list, list_elem value)
     if (list->free <= 0)
         return LIST_OUT;
 
-    int elem_i = list->free;
+    int i = list->free;
+    list->free = list->next[i];
 
-    list->data[elem_i] = value;
-    list->next[elem_i] = 0;
-    list->prev[elem_i] = list->head; // бывший последний
+    list->data[i] = value;
+    list->next[i] = 0;
+    list->prev[i] = list->head;  
 
-    if (list->head == 0)      
-        list->tail = list->free;
+    if (list->head == 0)   // if array was empty   
+        list->tail = i;
     else
-        list->next[list->head] = elem_i;
+        list->next[list->head] = i; // update the previous next elem
 
-    list->head = elem_i;
+    list->head = i; // new head
     list->size++; // count of elements
-
-    list->free = 0;
-    for (int i = 1; i < list->capacity; i++)
-    {
-        if (list->next[i] == -1)
-        {
-            list->free = i;
-            break;
-        }
-    }
-
-    if (list->free <= 0)
-        return LIST_OUT;
 
     return IS_OK;
 }
