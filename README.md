@@ -35,11 +35,13 @@ g++ -Wall -Wextra main.cpp lists.cpp -o ls.exe
 ./ls.exe
 
 ## Description of functions
-| Function | Description |
-| :--- | :--- |
-| `ListUnit` | Initializes the list and allocates memory |
-| `ListDestroy` | Frees memory and resets list fields | 
-| `ListPush` | Inserts an element after the specified index | 
+| Function | Description | Complexity |
+| :--- | :--- | :--- |
+| `ListUnit` | Initializes the list and allocates memory | O(n) |
+| `ListDestroy` | Frees memory and resets list fields | O(pohui) |
+| `ListPush` | Inserts an element after the specified index | O(1) |
+| `ListDump` | Console text dump | O(n) |
+| `ListDumpHtml` | Generate the graph (coloring) | O(n) |
 
 ## Not at all
 Thanks to Vyachelow Clickuekigerg (gay) for mentoring this project oh god!!!! w rizz wtf 
