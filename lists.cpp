@@ -208,7 +208,7 @@ ListError ListDumpHtml(lst_t* list)
     fprintf(dot, "}\n");
     fclose(dot);
 
-    //WriteToHtml(list);
+    WriteToHtml(list);
 
     return IS_OK;
 }
@@ -388,13 +388,10 @@ void WriteToHtml (lst_t* list)
 
     if (html) 
     {
-        fprintf(html, "<pre><b>=== DUMP (size: %zu | free: %d | tail: %d | head: %d) ===</b></pre>\n",
-                list->size, list->free, list->next[0], list->prev[0]);
-        
         fclose(html);
     }
 
-    system("dot -Tsvg_inline dump.dot >> log.html");
+    system("dot -Tpng dump.dot >> log.html");
 } 
 
 bool IsValid (lst_t* list, size_t i)

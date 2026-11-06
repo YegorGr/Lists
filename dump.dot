@@ -10,8 +10,8 @@ digraph G {
       <TR><TD>1</TD><TD>11</TD><TD>3</TD><TD>0</TD><TD>USED</TD></TR>
       <TR><TD>2</TD><TD>0</TD><TD>8</TD><TD>-1</TD><TD>FREE</TD></TR>
       <TR><TD>3</TD><TD>22</TD><TD>4</TD><TD>1</TD><TD>USED</TD></TR>
-      <TR><TD>4</TD><TD>22</TD><TD>6</TD><TD>3</TD><TD><FONT COLOR="red"><B>ERROR</B></FONT></TD></TR>
-      <TR><TD>5</TD><TD>22</TD><TD>6</TD><TD>4</TD><TD><FONT COLOR="red"><B>ERROR</B></FONT></TD></TR>
+      <TR><TD>4</TD><TD>22</TD><TD>5</TD><TD>3</TD><TD>USED</TD></TR>
+      <TR><TD>5</TD><TD>22</TD><TD>6</TD><TD>4</TD><TD>USED</TD></TR>
       <TR><TD>6</TD><TD>33</TD><TD>7</TD><TD>5</TD><TD>USED</TD></TR>
       <TR><TD>7</TD><TD>44</TD><TD>0</TD><TD>6</TD><TD>USED</TD></TR>
       <TR><TD>8</TD><TD>0</TD><TD>9</TD><TD>-1</TD><TD>FREE</TD></TR>
@@ -24,8 +24,8 @@ digraph G {
   node_1 [shape=record, style=filled, fillcolor="#ff4af3", label="{ INDEX = 1 | DATA = 11 | { <n> NEXT = 3 | <p> PREV = 0 | meow } }"];
   node_2 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 2 | DATA = FREE | { <n> NEXT = 8 | <p> PREV = -1 | meow } }"];
   node_3 [shape=record, style=filled, fillcolor="#2f7bfe", label="{ INDEX = 3 | DATA = 22 | { <n> NEXT = 4 | <p> PREV = 1 | meow } }"];
-  node_4 [shape=record, style=filled, fillcolor="#ff4d4d", label="{ INDEX = 4 | DATA = 22 | { <n> NEXT = 6 | <p> PREV = 3 | meow } }"];
-  node_5 [shape=record, style=filled, fillcolor="#ff4d4d", label="{ INDEX = 5 | DATA = 22 | { <n> NEXT = 6 | <p> PREV = 4 | meow } }"];
+  node_4 [shape=record, style=filled, fillcolor="#2f7bfe", label="{ INDEX = 4 | DATA = 22 | { <n> NEXT = 5 | <p> PREV = 3 | meow } }"];
+  node_5 [shape=record, style=filled, fillcolor="#2f7bfe", label="{ INDEX = 5 | DATA = 22 | { <n> NEXT = 6 | <p> PREV = 4 | meow } }"];
   node_6 [shape=record, style=filled, fillcolor="#2f7bfe", label="{ INDEX = 6 | DATA = 33 | { <n> NEXT = 7 | <p> PREV = 5 | meow } }"];
   node_7 [shape=record, style=filled, fillcolor="#9372f6", label="{ INDEX = 7 | DATA = 44 | { <n> NEXT = 0 | <p> PREV = 6 | meow } }"];
   node_8 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 8 | DATA = FREE | { <n> NEXT = 9 | <p> PREV = -1 | meow } }"];
@@ -51,10 +51,10 @@ digraph G {
   node_1:p -> node_0 [rank=same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
   node_3:n -> node_4 [rank=same, weight=100, color="#1e88e5", penwidth=1.5];
   node_3:p -> node_1 [rank=same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
-  node_4:n -> node_6 [rank=same, weight=100, color="#ff0000", penwidth=1.5];
+  node_4:n -> node_5 [rank=same, weight=100, color="#1e88e5", penwidth=1.5];
   node_4:p -> node_3 [rank=same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
   node_5:n -> node_6 [rank=same, weight=100, color="#1e88e5", penwidth=1.5];
-  node_5:p -> node_4 [rank=same, color="#ff0000", constraint=false, style=dashed, penwidth=1.5];
+  node_5:p -> node_4 [rank=same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
   node_6:n -> node_7 [rank=same, weight=100, color="#1e88e5", penwidth=1.5];
   node_6:p -> node_5 [rank=same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
   node_7:n -> node_0 [rank=same, constraint=false, color="#1e88e5", penwidth=1.5];

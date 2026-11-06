@@ -9,6 +9,7 @@ int main ()
 {
     lst_t lst1 = {};
 
+
     ListError err = ListUnit(&lst1, 10);
     double value = 0;
     ListPushHead(&lst1, 11);
@@ -19,10 +20,9 @@ int main ()
     ListPushHead(&lst1, 33);
     ListPushHead(&lst1, 44);
 
-    lst1.next[4] = 6;
-
     ListPop(&lst1, &value, 2);
     ListDumpHtml(&lst1);
+    WriteToHtml(&lst1);
 
     ListDump(&lst1);
 
