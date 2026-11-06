@@ -12,7 +12,7 @@ ListError ListUnit (lst_t* list, ssize_t capacity)
     if (capacity < 0)
         return NEGATIVE_CAPACITY;
 
-    list_elem* ptr_data = (list_elem*) calloc((size_t) capacity + 1, sizeof(list_elem)); // +1 for 0 in the first
+    list_elem* ptr_data = (list_elem*) calloc((size_t) capacity + 1, sizeof(list_elem));
     int*       ptr_next = (int*)       calloc((size_t) capacity + 1, sizeof(int));
     int*       ptr_prev = (int*)       calloc((size_t) capacity + 1, sizeof(int));
 
@@ -27,47 +27,18 @@ ListError ListUnit (lst_t* list, ssize_t capacity)
     ptr_next[0] = 0;
     ptr_prev[0] = 0;
 
-    for (size_t i = 1; i <= capacity; i++)
+    for (size_t i = 1; i <= (size_t)capacity; i++)
     {
-        ptr_next[i] = (i < capacity) ? i + 1 : 0; // when i == capacity next = 0 becouse end of array 
-        ptr_prev[i] = -1;                                
+        ptr_next[i] = (i < (size_t)capacity) ? (int)(i + 1) : 0;
+        ptr_prev[i] = -1;
     }
 
     list->data     = ptr_data;
     list->next     = ptr_next;
     list->prev     = ptr_prev;
-    list->free     = 1;
+    list->free     = (capacity > 0) ? 1 : 0;
     list->capacity = (size_t) capacity + 1;
-
-    list->tail     = 0;
-    list->head     = 0;
     list->size     = 0;
-
-    return IS_OK;
-}
-
-ListError ListPushHead (lst_t* list, list_elem value)
-{
-    if (list == nullptr)
-        return NULL_PTR;
-    
-    if (list->free <= 0)
-        return LIST_OUT;
-
-    int i = list->free;
-    list->free = list->next[i];
-
-    list->data[i] = value;
-    list->next[i] = 0;
-    list->prev[i] = list->head;  
-
-    if (list->head == 0)   // if array was empty   
-        list->tail = i;
-    else
-        list->next[list->head] = i; // update the previous next elem
-
-    list->head = i; // new head
-    list->size++; // count of elements
 
     return IS_OK;
 }
@@ -81,14 +52,82 @@ ListError ListDestroy (lst_t* list)
     free(list->next);
     free(list->prev);
 
-    list->data = nullptr;
-    list->next = nullptr;
-    list->prev = nullptr;
-    list->free = 0;
+    list->data     = nullptr;
+    list->next     = nullptr;
+    list->prev     = nullptr;
+    list->free     = 0;
     list->capacity = 0;
-    list->head = 0;
-    list->tail = 0;
-    list->size = 0;
+    list->size     = 0;
+
+    return IS_OK;
+}
+
+ListError ListPush (lst_t* list, list_elem value, int index)
+{
+    if (list == nullptr)
+        return NULL_PTR;
+
+    if (index < 0 || (size_t)index >= list->capacity || list->prev[index] == -1)
+        return NO_ELEMENT;
+
+    if (list->free <= 0)
+        return LIST_OUT;
+
+    int i      = list->free;
+    list->free = list->next[i];
+
+    int next_el = list->next[index];
+
+    list->data[i] = value;
+    list->prev[i] = index;
+    list->next[i] = next_el;
+
+    list->next[index]   = i;
+    list->prev[next_el] = i;
+
+    list->size++;
+
+    return IS_OK;
+}
+
+ListError ListPushHead (lst_t* list, list_elem value)
+{
+    if (list == nullptr)
+        return NULL_PTR;
+
+    return ListPush(list, value, list->prev[0]);
+}
+
+ListError ListPushTail (lst_t* list, list_elem value)
+{
+    if (list == nullptr)
+        return NULL_PTR;
+
+    return ListPush(list, value, 0);
+}
+
+ListError ListPop (lst_t* list, list_elem* value, int index)
+{
+    if (list == nullptr || value == nullptr)
+        return NULL_PTR;
+
+    if (index <= 0 || (size_t)index >= list->capacity || list->prev[index] == -1)
+        return NO_ELEMENT;
+
+    *value = list->data[index];
+
+    int next_el = list->next[index];
+    int prev_el = list->prev[index];
+
+    list->next[prev_el] = next_el;
+    list->prev[next_el] = prev_el;
+
+    list->data[index] = 0;
+    list->prev[index] = -1;
+    list->next[index] = list->free;
+    list->free        = index;
+
+    list->size--;
 
     return IS_OK;
 }
@@ -98,61 +137,15 @@ ListError ListPopHead (lst_t* list, list_elem* value)
     if (list == nullptr)
         return NULL_PTR;
 
-    if (list->head < 0)
-        return OVERFLOW_ARRAY;
-    
-    if (value == nullptr)
-        return NULL_PTR;
-
-    if (list->next[list->head] == -1)
-        return NO_ELEMENT;
-
-    *value = list->data[list->head];
-
-    list->next[list->head] = -1;
-    list->prev[list->head] = -1;
-
-    return IS_OK;
+    return ListPop(list, value, list->prev[0]);
 }
 
-ListError ListPop (lst_t* list, list_elem* value, int index)
+ListError ListPopTail (lst_t* list, list_elem* value)
 {
     if (list == nullptr)
         return NULL_PTR;
-    
-    if (value == nullptr)
-        return NULL_PTR;
 
-    if (list->next[index] == -1)
-        return NO_ELEMENT;  
-
-    int next_el = list->next[index];
-    int prev_el = list->prev[index];
-
-    list->size--;
-    list->free = index;
-
-    if (next_el == 0)
-    {
-        ListPopHead(list, value);
-        return IS_OK;
-    }
-    
-    if (prev_el == 0)
-    {
-        //TODO ListPopTail(list, value);
-        return IS_OK;
-    }
-    
-    *value = list->data[index];
-
-    list->next[prev_el] = next_el;
-    list->prev[next_el] = prev_el;
-
-    list->next[index] = -1;
-    list->prev[index] = -1;  
-    
-    return IS_OK;
+    return ListPop(list, value, list->next[0]);
 }
 
 ListError ListDump (lst_t* list)
@@ -160,37 +153,157 @@ ListError ListDump (lst_t* list)
     assert(list);
 
     printf("index ");
-    for (int i = 0; i < list->head + 1; i++)
+    for (size_t i = 0; i < list->capacity; i++)
     {
-        printf("  [%-d]", i);
+        printf("  [%-zu]", i);
     }
     printf("\ndata  ");
 
-    for (int i = 0; i < list->head + 1; i++)
+    for (size_t i = 0; i < list->capacity; i++)
     {
         printf("%5.0lf", list->data[i]);
     }
 
     printf("\nnext  ");
-    for (int i = 0; i < list->head + 1; i++)
+    for (size_t i = 0; i < list->capacity; i++)
     {
         printf("%5d", list->next[i]);
     }
 
     printf("\nprev  ");
-    for (int i = 0; i < list->head + 1; i++)
+    for (size_t i = 0; i < list->capacity; i++)
     {
         printf("%5d", list->prev[i]);
     }
 
-    printf("\n\nHead: %d", list->head);
-    printf("\nTail: %d", list->tail);
-    printf("\nCount of elemnts: %zu", list->size);
+    printf("\n\nTail (first): %d", list->next[0]);
+    printf("\nHead (last):  %d", list->prev[0]);
+    printf("\nCount of elements: %zu", list->size);
     printf("\nFree element: %d", list->free);
 
-    printf("\n\nPtr data: [%p]", &list->data[0]);
-    printf("\nPtr next: [%p]", &list->next[0]);
-    printf("\nPtr prev: [%p]", &list->prev[0]);
+    printf("\n\nPtr data: [%p]", (void*)&list->data[0]);
+    printf("\nPtr next: [%p]", (void*)&list->next[0]);
+    printf("\nPtr prev: [%p]\n", (void*)&list->prev[0]);
 
     return IS_OK;
-} 
+}
+
+ListError ListDumpHtml(lst_t* list, const char* comment)
+{
+    assert(list);
+
+    FILE* dot = fopen("dump.dot", "w");
+    if (!dot) 
+        return NULL_PTR;
+
+    fprintf(dot, "digraph G {\n"
+                 "  rankdir=TB;\n"
+                 "  ranksep=0.35;\n"
+                 "  node [fontname=\"Calibri\", fontsize=16];\n\n");
+
+    fprintf(dot, "  table_node [shape=plaintext, label=<\n"
+                 "    <TABLE BORDER=\"1\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
+                 "      <TR><TD><B>idx</B></TD><TD><B>data</B></TD><TD><B>next</B></TD><TD><B>prev</B></TD><TD><B>status</B></TD></TR>\n");
+
+    for (size_t i = 0; i < list->capacity; i++)
+    {
+        const char* status = nullptr;
+        if (i == 0)
+            status = "SENTINEL";
+        else if (list->prev[i] == -1)
+            status = "FREE";
+        else
+            status = "USED";
+        
+        double print_data = 3.14;
+        if (i == 0 || list->prev[i] == -1)
+            print_data = 0.0;
+        else 
+            print_data = list->data[i];
+        
+        fprintf(dot, "      <TR><TD>%zu</TD><TD>%.0lf</TD><TD>%d</TD><TD>%d</TD><TD>%s</TD></TR>\n",
+                i, print_data, list->next[i], list->prev[i], status);
+    }
+    fprintf(dot, "    </TABLE>\n  >];\n\n");
+
+    int tail = list->next[0];
+    int head = list->prev[0];
+
+    for (size_t i = 0; i < list->capacity; i++)
+    {
+        const char* color = "#2f7bfe"; // used
+
+        if (i == 0)                     
+            color = "#dd8007"; // sentinel
+        
+        else if (list->prev[i] == -1)   
+            color = "#57f157"; // free
+        
+        else if (i == tail)        
+            color = "#ff4af3"; // tail
+        
+        else if (i == head)        
+            color = "#9372f6"; // head
+
+        char data_str[MAX_LEN_DUMP] = {};
+        if (i != 0 && list->prev[i] == -1)
+            sprintf(data_str, "FREE");
+        else
+            sprintf(data_str, "%.0lf", list->data[i]);
+
+        fprintf(dot, "  node_%zu [shape=record, style=filled, fillcolor=\"%s\", "
+                     "label=\"{ INDEX = %zu | DATA = %s | { <n> NEXT = %d | <p> PREV = %d | meow } }\"];\n",
+                i, color, i, data_str, list->next[i], list->prev[i]);
+    }
+
+    fprintf(dot, "\n  node [shape=box, style=\"rounded,filled\"];\n"
+                 "  FREE [fillcolor=\"#57f157\"];\n"
+                 "  TAIL [fillcolor=\"#ff4af3\"];\n"
+                 "  HEAD [fillcolor=\"#9372f6\"];\n\n");
+
+    if (list->free > 0)
+    {
+        fprintf(dot, "  { rank=same; FREE; node_%d; }\n", list->free);
+        fprintf(dot, "  FREE -> node_%d;\n", list->free);
+    }
+
+    if (tail >= 0) 
+    {
+        fprintf(dot, "  { rank=same; TAIL; node_%d; }\n", tail);
+        fprintf(dot, "  TAIL -> node_%d;\n", tail);
+    }
+    
+    if (head >= 0) 
+    {
+        fprintf(dot, "  { rank=same; HEAD; node_%d; }\n", head);
+        fprintf(dot, "  HEAD -> node_%d;\n\n", head);
+    }
+
+    int free_elem = list->free;
+    while (free_elem != 0)
+    {
+        int next_elem = list->next[free_elem];
+        
+        if (next_elem != 0) 
+            fprintf(dot, "  node_%d:n -> node_%d [weight=10];\n", free_elem, next_elem);
+
+        else 
+            fprintf(dot, "  node_%d:n -> node_0 [weight=10];\n", free_elem);
+        
+        free_elem = next_elem;
+    }
+
+    fprintf(dot, "}\n");
+    fclose(dot);
+
+    FILE* html = fopen("log.html", "a");
+    if (html) {
+        fprintf(html, "<pre><b>=== %s (size: %zu | free: %d | tail: %d | head: %d) ===</b></pre>\n",
+                comment, list->size, list->free, tail, head);
+        fclose(html);
+    }
+
+    system("dot -Tsvg_inline dump.dot >> log.html");
+
+    return IS_OK;
+}

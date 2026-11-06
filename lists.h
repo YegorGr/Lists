@@ -6,6 +6,7 @@
 
 typedef double list_elem;
 
+#define MAX_LEN_DUMP 8
 
 struct lst_t
 {
@@ -14,9 +15,6 @@ struct lst_t
     int*       prev;
     int        free; 
     size_t     capacity;
-
-    int        tail; //самый первый (который сейчас)
-    int        head; // бывший последний (который последний сейчас)
     size_t     size; 
 };
 
@@ -29,6 +27,8 @@ enum ListError
     LIST_OUT,
     OVERFLOW_ARRAY,
     NO_ELEMENT,
+    EMPTY_ARRAY,
+    BUSY_ELEM,
 };
 
 ListError ListUnit    (lst_t* list, ssize_t capacity);
@@ -37,7 +37,7 @@ ListError ListDump    (lst_t* list);
 
 
 ListError ListPop  (lst_t* list, list_elem* value, int index);
-//TODO - ListPush (lst_t* list, list_elem* value, int index);
+ListError ListPush (lst_t* list, list_elem value, int index);
 
 ListError ListPushHead (lst_t* list, list_elem value);
 ListError ListPushTail (lst_t* list, list_elem value);
@@ -46,3 +46,4 @@ ListError ListPushTail (lst_t* list, list_elem value);
 ListError ListPopHead  (lst_t* list, list_elem* value);
 ListError ListPopTail  (lst_t* list, list_elem* vlaue);
 
+ListError ListDumpHtml(lst_t* list, const char* comment);
