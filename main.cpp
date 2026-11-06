@@ -9,7 +9,7 @@ int main ()
 {
     lst_t lst1 = {};
 
-    ListError err = ListUnit(&lst1, 20);
+    ListError err = ListUnit(&lst1, 5);
     double value = 0;
     ListPushHead(&lst1, 11);
     ListPushHead(&lst1, 22);    
@@ -17,7 +17,7 @@ int main ()
     ListPushHead(&lst1, 44);
 
     ListPop(&lst1, &value, 2);
-    ListDumpHtml(&lst1, "хуйня");
+    ListDumpHtml(&lst1);
 
     ListDump(&lst1);
 

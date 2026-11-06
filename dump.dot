@@ -1,7 +1,7 @@
 digraph G {
   rankdir=TB;
   ranksep=0.35;
-  node [fontname="Calibri", fontsize=16];
+  node [fontname="Calibri", fontsize=14];
 
   table_node [shape=plaintext, label=<
     <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
@@ -11,22 +11,7 @@ digraph G {
       <TR><TD>2</TD><TD>0</TD><TD>5</TD><TD>-1</TD><TD>FREE</TD></TR>
       <TR><TD>3</TD><TD>33</TD><TD>4</TD><TD>1</TD><TD>USED</TD></TR>
       <TR><TD>4</TD><TD>44</TD><TD>0</TD><TD>3</TD><TD>USED</TD></TR>
-      <TR><TD>5</TD><TD>0</TD><TD>6</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>6</TD><TD>0</TD><TD>7</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>7</TD><TD>0</TD><TD>8</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>8</TD><TD>0</TD><TD>9</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>9</TD><TD>0</TD><TD>10</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>10</TD><TD>0</TD><TD>11</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>11</TD><TD>0</TD><TD>12</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>12</TD><TD>0</TD><TD>13</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>13</TD><TD>0</TD><TD>14</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>14</TD><TD>0</TD><TD>15</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>15</TD><TD>0</TD><TD>16</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>16</TD><TD>0</TD><TD>17</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>17</TD><TD>0</TD><TD>18</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>18</TD><TD>0</TD><TD>19</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>19</TD><TD>0</TD><TD>20</TD><TD>-1</TD><TD>FREE</TD></TR>
-      <TR><TD>20</TD><TD>0</TD><TD>0</TD><TD>-1</TD><TD>FREE</TD></TR>
+      <TR><TD>5</TD><TD>0</TD><TD>0</TD><TD>-1</TD><TD>FREE</TD></TR>
     </TABLE>
   >];
 
@@ -35,22 +20,7 @@ digraph G {
   node_2 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 2 | DATA = FREE | { <n> NEXT = 5 | <p> PREV = -1 | meow } }"];
   node_3 [shape=record, style=filled, fillcolor="#2f7bfe", label="{ INDEX = 3 | DATA = 33 | { <n> NEXT = 4 | <p> PREV = 1 | meow } }"];
   node_4 [shape=record, style=filled, fillcolor="#9372f6", label="{ INDEX = 4 | DATA = 44 | { <n> NEXT = 0 | <p> PREV = 3 | meow } }"];
-  node_5 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 5 | DATA = FREE | { <n> NEXT = 6 | <p> PREV = -1 | meow } }"];
-  node_6 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 6 | DATA = FREE | { <n> NEXT = 7 | <p> PREV = -1 | meow } }"];
-  node_7 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 7 | DATA = FREE | { <n> NEXT = 8 | <p> PREV = -1 | meow } }"];
-  node_8 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 8 | DATA = FREE | { <n> NEXT = 9 | <p> PREV = -1 | meow } }"];
-  node_9 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 9 | DATA = FREE | { <n> NEXT = 10 | <p> PREV = -1 | meow } }"];
-  node_10 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 10 | DATA = FREE | { <n> NEXT = 11 | <p> PREV = -1 | meow } }"];
-  node_11 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 11 | DATA = FREE | { <n> NEXT = 12 | <p> PREV = -1 | meow } }"];
-  node_12 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 12 | DATA = FREE | { <n> NEXT = 13 | <p> PREV = -1 | meow } }"];
-  node_13 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 13 | DATA = FREE | { <n> NEXT = 14 | <p> PREV = -1 | meow } }"];
-  node_14 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 14 | DATA = FREE | { <n> NEXT = 15 | <p> PREV = -1 | meow } }"];
-  node_15 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 15 | DATA = FREE | { <n> NEXT = 16 | <p> PREV = -1 | meow } }"];
-  node_16 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 16 | DATA = FREE | { <n> NEXT = 17 | <p> PREV = -1 | meow } }"];
-  node_17 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 17 | DATA = FREE | { <n> NEXT = 18 | <p> PREV = -1 | meow } }"];
-  node_18 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 18 | DATA = FREE | { <n> NEXT = 19 | <p> PREV = -1 | meow } }"];
-  node_19 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 19 | DATA = FREE | { <n> NEXT = 20 | <p> PREV = -1 | meow } }"];
-  node_20 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 20 | DATA = FREE | { <n> NEXT = 0 | <p> PREV = -1 | meow } }"];
+  node_5 [shape=record, style=filled, fillcolor="#57f157", label="{ INDEX = 5 | DATA = FREE | { <n> NEXT = 0 | <p> PREV = -1 | meow } }"];
 
   node [shape=box, style="rounded,filled"];
   FREE [fillcolor="#57f157"];
@@ -64,29 +34,14 @@ digraph G {
   { rank=same; HEAD; node_4; }
   HEAD -> node_4;
 
-  node_0:n -> node_1 [weight=10, color="#1e88e5", penwidth=2];
-  node_0:p -> node_4 [color="#43a047", constraint=false, style=dashed, penwidth=1.5];
-  node_1:n -> node_3 [weight=10, color="#1e88e5", penwidth=2];
-  node_1:p -> node_0 [color="#43a047", constraint=false, style=dashed, penwidth=1.5];
-  node_3:n -> node_4 [weight=10, color="#1e88e5", penwidth=2];
-  node_3:p -> node_1 [color="#43a047", constraint=false, style=dashed, penwidth=1.5];
-  node_4:n -> node_0 [constraint=false, color="#1e88e5", penwidth=2];
-  node_4:p -> node_3 [color="#43a047", constraint=false, style=dashed, penwidth=1.5];
+  node_0:n -> node_1 [rank = same, weight=100, color="#1e88e5", penwidth=2];
+  node_0:p -> node_4 [rank = same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
+  node_1:n -> node_3 [rank = same, weight=100, color="#1e88e5", penwidth=2];
+  node_1:p -> node_0 [rank = same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
+  node_3:n -> node_4 [rank = same, weight=100, color="#1e88e5", penwidth=2];
+  node_3:p -> node_1 [rank = same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
+  node_4:n -> node_0 [rank = same, constraint=false, color="#1e88e5", penwidth=2];
+  node_4:p -> node_3 [rank = same, color="#43a047", constraint=false, style=dashed, penwidth=1.5];
   node_2:n -> node_5 [weight=100];
-  node_5:n -> node_6 [weight=100];
-  node_6:n -> node_7 [weight=100];
-  node_7:n -> node_8 [weight=100];
-  node_8:n -> node_9 [weight=100];
-  node_9:n -> node_10 [weight=100];
-  node_10:n -> node_11 [weight=100];
-  node_11:n -> node_12 [weight=100];
-  node_12:n -> node_13 [weight=100];
-  node_13:n -> node_14 [weight=100];
-  node_14:n -> node_15 [weight=100];
-  node_15:n -> node_16 [weight=100];
-  node_16:n -> node_17 [weight=100];
-  node_17:n -> node_18 [weight=100];
-  node_18:n -> node_19 [weight=100];
-  node_19:n -> node_20 [weight=100];
-  node_20:n -> node_0 [weight=100];
+  node_5:n -> node_0 [weight=100];
 }
