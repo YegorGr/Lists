@@ -12,7 +12,7 @@ The God damn project has a built-in tool that shows the list status using **`Gra
   * `prev[0]` point to **Head** (the last node of array).
 * **A chain of free cells (`free`):** The empty cells are combined into a singly linked list within the same `next` array, which allows elements to be allocated and freed in $O(1)$ time.
 * **Verificator:** Check connections with neighbors elements (`prev[next[i]] == i` и `next[prev[i]] == i`) and control array out.
-* **(Graphviz + HTML (see you soon):** Generation of colored graphs (`SENTINEL`, `HEAD`, `TAIL`, `FREE`, `USED`, `ERROR`).
+* **(Graphviz + HTML (see you soon)):** Generation of colored graphs (`SENTINEL`, `HEAD`, `TAIL`, `FREE`, `USED`, `ERROR`).
 
 ---
 
@@ -24,3 +24,21 @@ The God damn project has a built-in tool that shows the list status using **`Gra
 ├── main.cpp        
 ├── dump.dot    
 └── log.html     
+
+## Project assembly
+```text
+g++ -Wall -Wextra main.cpp lists.cpp -o ls.exe
+
+## Start the gay project
+./ls.exe
+
+## Description of functions
+| Function | Description |
+| :--- | :--- | :--- |
+| `ListUnit` | Initializes the list and allocates memory |
+| `ListDestroy` | Frees memory and resets list fields | 
+| `ListPush` | Inserts an element after the specified index | 
+
+## Not at all
+Thanks to Vyachelow Clickuekigerg (gay) for mentoring this project oh god!!!! w rizz wtf 
+
