@@ -24,10 +24,12 @@ The God damn project has a built-in tool that shows the list status using **`Gra
 ├── main.cpp        
 ├── dump.dot    
 └── log.html     
+```
 
 ## Project assembly
 ```text
 g++ -Wall -Wextra main.cpp lists.cpp -o ls.exe
+```
 
 ## Start the gay project
 ./ls.exe
