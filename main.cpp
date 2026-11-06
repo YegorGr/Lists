@@ -9,12 +9,17 @@ int main ()
 {
     lst_t lst1 = {};
 
-    ListError err = ListUnit(&lst1, 5);
+    ListError err = ListUnit(&lst1, 10);
     double value = 0;
     ListPushHead(&lst1, 11);
-    ListPushHead(&lst1, 22);    
+    ListPushHead(&lst1, 22);  
+    ListPushHead(&lst1, 22);
+    ListPushHead(&lst1, 22);
+    ListPushHead(&lst1, 22);  
     ListPushHead(&lst1, 33);
     ListPushHead(&lst1, 44);
+
+    lst1.next[4] = 6;
 
     ListPop(&lst1, &value, 2);
     ListDumpHtml(&lst1);

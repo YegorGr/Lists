@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <sys/types.h>
+#include <stdbool.h>
 
 typedef double list_elem;
 
@@ -56,6 +57,7 @@ void addConnectionArray (FILE* dot, lst_t* list);
 void addConnectionFree  (FILE* dot, lst_t* list);
 
 void WriteToHtml        (lst_t* list);
+bool IsValid            (lst_t* list, size_t i);
 
 
 

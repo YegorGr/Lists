@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <assert.h>
+#include <stdbool.h>
 
 #include "lists.h"
 
@@ -21,6 +22,7 @@ ListError ListUnit (lst_t* list, ssize_t capacity)
         free(ptr_data);
         free(ptr_next);
         free(ptr_prev);
+
         return NO_MEMORY;
     }
 
@@ -228,8 +230,13 @@ void addStatusInd (FILE* dot, lst_t* list)
     for (size_t i = 0; i < list->capacity; i++)
     {
         const char* status = nullptr;
-        if (i == 0)
+
+        if (!IsValid(list, i))
+            status = "<FONT COLOR=\"red\"><B>ERROR</B></FONT>";
+
+        else if (i == 0)
             status = "SENTINEL";
+
         else if (list->prev[i] == -1)
             status = "FREE";
         else
@@ -249,25 +256,51 @@ void addStatusInd (FILE* dot, lst_t* list)
 
 void addConnectionArray (FILE* dot, lst_t* list)
 {
-    int curr = 0;
-    size_t guard = 0;
-    do
+    for (size_t i = 0; i < list->capacity; i++)
     {
-        int nxt = list->next[curr];
-        int prv = list->prev[curr];
+        if (i != 0 && list->prev[i] == -1) // skip free 
+            continue;
 
-        if (nxt != 0) 
-            fprintf(dot, "  node_%d:n -> node_%d [rank = same, weight=100, color=\"#1e88e5\", penwidth=2];\n", curr, nxt);
-        
-        else if (curr != 0) 
-            fprintf(dot, "  node_%d:n -> node_0 [rank = same, constraint=false, color=\"#1e88e5\", penwidth=2];\n", curr);
+        int next_elem = list->next[i];
+        int prev_elem = list->prev[i];
 
-        if (list->size > 0) 
-            fprintf(dot, "  node_%d:p -> node_%d [rank = same, color=\"#43a047\", constraint=false, style=dashed, penwidth=1.5];\n", curr, prv);
+        bool next_ok = (next_elem >= 0 && next_elem < list->capacity && list->prev[next_elem] == i);
+        const char* next_color = next_ok ? "#1e88e5" : "#ff0000"; 
 
-        curr = nxt;
-    } while (curr != 0 && guard++ < list->capacity);
+        if (next_elem >= 0 && next_elem < list->capacity)
+        {
+            if (next_elem != 0)
+                fprintf(dot, "  node_%zu:n -> node_%d [rank=same, weight=100, color=\"%s\", penwidth=1.5];\n", 
+                        i, next_elem, next_color);
+            else if (i != 0 || !next_ok)
+                fprintf(dot, "  node_%zu:n -> node_0 [rank=same, constraint=false, color=\"%s\", penwidth=1.5];\n", 
+                        i, next_color);
+        }
+        else
+        {
+            fprintf(dot, "  bad_next_%zu [shape=octagon, style=filled, fillcolor=\"#ff4d4d\", label=\"BAD NEXT: %d\"];\n", i, next_elem);
+            fprintf(dot, "  node_%zu:n -> bad_next_%zu [color=\"#ff0000\", penwidth=3];\n", i, i);
+        }
+
+        if (list->size > 0 || i != 0)
+        {
+            bool prev_ok = (prev_elem >= 0 && prev_elem < list->capacity && list->next[prev_elem] == i);
+            const char* prev_color = prev_ok ? "#43a047" : "#ff0000"; 
+
+            if (prev_elem >= 0 && prev_elem < list->capacity)
+            {
+                fprintf(dot, "  node_%zu:p -> node_%d [rank=same, color=\"%s\", constraint=false, style=dashed, penwidth=1.5];\n", 
+                        i, prev_elem, prev_color);
+            }
+            else
+            {
+                fprintf(dot, "  bad_prev_%zu [shape=octagon, style=filled, fillcolor=\"#ff4d4d\", label=\"BAD PREV: %d\"];\n", i, prev_elem);
+                fprintf(dot, "  node_%zu:p -> bad_prev_%zu [color=\"#ff0000\", style=dashed, penwidth=3];\n", i, i);
+            }
+        }
+    }
 }
+
 
 void addAllElements (FILE* dot, lst_t* list)
 {
@@ -275,7 +308,10 @@ void addAllElements (FILE* dot, lst_t* list)
     {
         const char* color = "#2f7bfe"; // used
 
-        if (i == 0)                     
+        if (!IsValid(list, i))
+            color = "#ff4d4d"; // error
+
+        else if (i == 0)                     
             color = "#dd8007"; // sentinel
         
         else if (list->prev[i] == -1)   
@@ -301,7 +337,8 @@ void addAllElements (FILE* dot, lst_t* list)
     fprintf(dot, "\n  node [shape=box, style=\"rounded,filled\"];\n"
                  "  FREE [fillcolor=\"#57f157\"];\n"
                  "  TAIL [fillcolor=\"#ff4af3\"];\n"
-                 "  HEAD [fillcolor=\"#9372f6\"];\n\n");
+                 "  HEAD  [fillcolor=\"#9372f6\"];\n"
+                 "  ERROR [fillcolor=\"#ff4d4d\"];\n\n");
 }
 
 void addMainElements (FILE* dot, lst_t* list)
@@ -348,11 +385,37 @@ void addConnectionFree (FILE* dot, lst_t* list)
 void WriteToHtml (lst_t* list)
 {
     FILE* html = fopen("log.html", "a");
-    if (html) {
-        fprintf(html, "<pre><b>=== %s (size: %zu | free: %d | tail: %d | head: %d) ===</b></pre>\n",
+
+    if (html) 
+    {
+        fprintf(html, "<pre><b>=== DUMP (size: %zu | free: %d | tail: %d | head: %d) ===</b></pre>\n",
                 list->size, list->free, list->next[0], list->prev[0]);
+        
         fclose(html);
     }
 
     system("dot -Tsvg_inline dump.dot >> log.html");
 } 
+
+bool IsValid (lst_t* list, size_t i)
+{
+    if (i != 0 && list->prev[i] == -1)
+        return (list->next[i] >= 0 && list->next[i] < list->capacity);
+
+    int next_elem = list->next[i];
+    int prev_elem = list->prev[i];
+
+    if (next_elem < 0 || next_elem >= list->capacity)
+        return false;
+    
+    if (prev_elem < 0 || prev_elem >= list->capacity)
+        return false;
+
+    if (list->prev[next_elem] != i)
+        return false;
+
+    if (list->next[prev_elem] != i)
+        return false;
+
+    return true;
+}
