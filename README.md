@@ -36,7 +36,7 @@ g++ -Wall -Wextra main.cpp lists.cpp -o ls.exe
 
 ## Description of functions
 | Function | Description |
-| :--- | :--- | :--- |
+| :--- | :--- |
 | `ListUnit` | Initializes the list and allocates memory |
 | `ListDestroy` | Frees memory and resets list fields | 
 | `ListPush` | Inserts an element after the specified index | 
