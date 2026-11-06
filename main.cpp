@@ -15,11 +15,9 @@ int main ()
     ListPushHead(&lst1, 22);    
     ListPushHead(&lst1, 33);
     ListPushHead(&lst1, 44);
-    ListDumpHtml(&lst1, "хуйня");
 
     ListPop(&lst1, &value, 2);
-
-    ListPush(&lst1, 55.0, 1);
+    ListDumpHtml(&lst1, "хуйня");
 
     ListDump(&lst1);
 

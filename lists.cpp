@@ -196,7 +196,31 @@ ListError ListDumpHtml(lst_t* list, const char* comment)
     if (!dot) 
         return NULL_PTR;
 
-    fprintf(dot, "digraph G {\n"
+    addHtmlName(dot);
+    addStatusInd(dot, list);
+    addAllElements(dot, list);
+    addMainElements(dot, list);
+    addConnectionArray(dot, list);
+    addConnectionFree(dot, list);
+
+    fprintf(dot, "}\n");
+    fclose(dot);
+
+    FILE* html = fopen("log.html", "a");
+    if (html) {
+        fprintf(html, "<pre><b>=== %s (size: %zu | free: %d | tail: %d | head: %d) ===</b></pre>\n",
+                comment, list->size, list->free, list->next[0], list->prev[0]);
+        fclose(html);
+    }
+
+    system("dot -Tsvg_inline dump.dot >> log.html");
+
+    return IS_OK;
+}
+
+void addHtmlName (FILE* dot)
+{
+   fprintf(dot, "digraph G {\n"
                  "  rankdir=TB;\n"
                  "  ranksep=0.35;\n"
                  "  node [fontname=\"Calibri\", fontsize=16];\n\n");
@@ -204,7 +228,10 @@ ListError ListDumpHtml(lst_t* list, const char* comment)
     fprintf(dot, "  table_node [shape=plaintext, label=<\n"
                  "    <TABLE BORDER=\"1\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"5\">\n"
                  "      <TR><TD><B>idx</B></TD><TD><B>data</B></TD><TD><B>next</B></TD><TD><B>prev</B></TD><TD><B>status</B></TD></TR>\n");
+}
 
+void addStatusInd (FILE* dot, lst_t* list)
+{
     for (size_t i = 0; i < list->capacity; i++)
     {
         const char* status = nullptr;
@@ -225,10 +252,32 @@ ListError ListDumpHtml(lst_t* list, const char* comment)
                 i, print_data, list->next[i], list->prev[i], status);
     }
     fprintf(dot, "    </TABLE>\n  >];\n\n");
+}
 
-    int tail = list->next[0];
-    int head = list->prev[0];
+void addConnectionArray (FILE* dot, lst_t* list)
+{
+    int curr = 0;
+    size_t guard = 0;
+    do
+    {
+        int nxt = list->next[curr];
+        int prv = list->prev[curr];
 
+        if (nxt != 0) 
+            fprintf(dot, "  node_%d:n -> node_%d [weight=10, color=\"#1e88e5\", penwidth=2];\n", curr, nxt);
+        
+        else if (curr != 0) 
+            fprintf(dot, "  node_%d:n -> node_0 [constraint=false, color=\"#1e88e5\", penwidth=2];\n", curr);
+
+        if (list->size > 0) 
+            fprintf(dot, "  node_%d:p -> node_%d [color=\"#43a047\", constraint=false, style=dashed, penwidth=1.5];\n", curr, prv);
+
+        curr = nxt;
+    } while (curr != 0 && guard++ < list->capacity);
+}
+
+void addAllElements (FILE* dot, lst_t* list)
+{
     for (size_t i = 0; i < list->capacity; i++)
     {
         const char* color = "#2f7bfe"; // used
@@ -239,10 +288,10 @@ ListError ListDumpHtml(lst_t* list, const char* comment)
         else if (list->prev[i] == -1)   
             color = "#57f157"; // free
         
-        else if (i == tail)        
+        else if (i == list->next[0])        
             color = "#ff4af3"; // tail
         
-        else if (i == head)        
+        else if (i == list->prev[0])        
             color = "#9372f6"; // head
 
         char data_str[MAX_LEN_DUMP] = {};
@@ -260,6 +309,12 @@ ListError ListDumpHtml(lst_t* list, const char* comment)
                  "  FREE [fillcolor=\"#57f157\"];\n"
                  "  TAIL [fillcolor=\"#ff4af3\"];\n"
                  "  HEAD [fillcolor=\"#9372f6\"];\n\n");
+}
+
+void addMainElements (FILE* dot, lst_t* list)
+{
+    int tail = list->next[0];
+    int head = list->prev[0];
 
     if (list->free > 0)
     {
@@ -278,32 +333,21 @@ ListError ListDumpHtml(lst_t* list, const char* comment)
         fprintf(dot, "  { rank=same; HEAD; node_%d; }\n", head);
         fprintf(dot, "  HEAD -> node_%d;\n\n", head);
     }
+}
 
+void addConnectionFree (FILE* dot, lst_t* list)
+{
     int free_elem = list->free;
     while (free_elem != 0)
     {
         int next_elem = list->next[free_elem];
         
         if (next_elem != 0) 
-            fprintf(dot, "  node_%d:n -> node_%d [weight=10];\n", free_elem, next_elem);
+            fprintf(dot, "  node_%d:n -> node_%d [weight=100];\n", free_elem, next_elem);
 
         else 
-            fprintf(dot, "  node_%d:n -> node_0 [weight=10];\n", free_elem);
+            fprintf(dot, "  node_%d:n -> node_0 [weight=100];\n", free_elem);
         
         free_elem = next_elem;
-    }
-
-    fprintf(dot, "}\n");
-    fclose(dot);
-
-    FILE* html = fopen("log.html", "a");
-    if (html) {
-        fprintf(html, "<pre><b>=== %s (size: %zu | free: %d | tail: %d | head: %d) ===</b></pre>\n",
-                comment, list->size, list->free, tail, head);
-        fclose(html);
-    }
-
-    system("dot -Tsvg_inline dump.dot >> log.html");
-
-    return IS_OK;
+    }  
 }

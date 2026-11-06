@@ -47,3 +47,15 @@ ListError ListPopHead  (lst_t* list, list_elem* value);
 ListError ListPopTail  (lst_t* list, list_elem* vlaue);
 
 ListError ListDumpHtml(lst_t* list, const char* comment);
+
+void addHtmlName        (FILE* dot);
+void addStatusInd       (FILE* dot, lst_t* list);
+void addAllElements     (FILE* dot, lst_t* list);
+void addMainElements    (FILE* dot, lst_t* list);
+void addConnectionArray (FILE* dot, lst_t* list);
+void addConnectionFree  (FILE* dot, lst_t* list);
+
+
+
+
+
